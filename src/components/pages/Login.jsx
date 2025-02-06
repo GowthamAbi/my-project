@@ -1,25 +1,53 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import api from '../../services/api'; // Your axios instance to communicate with backend
 
 const Login = () => {
-  // You can manage form data with React state (optional)
+  // State hooks for form data
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [rememberMe, setRememberMe] = useState(false);
+  const [error, setError] = useState('');
+  
+  const navigate = useNavigate();
 
-  // Submit handler
-  const handleSubmit = (e) => {
+  // Handle login form submission
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Handle login logic here (e.g., send data to an API)
-    console.log('Email:', email);
-    console.log('Password:', password);
-    console.log('Remember Me:', rememberMe);
+
+    // Prepare the user credentials for the request
+    const userData = { email, password };
+
+    try {
+      // Make the POST request to the login endpoint
+      const response = await api.post('/api/auth/login', userData);
+
+      if (response.status === 200) {
+        // Store the JWT token if login is successful
+        localStorage.setItem('authToken', response.data.token);
+
+        // Optionally, store the "remember me" flag if you need to keep the session active
+        if (rememberMe) {
+          localStorage.setItem('rememberMe', true);
+        }
+
+        // Navigate to the dashboard
+        navigate('/dashboard');
+      } else {
+        // Handle any errors returned from the server
+        setError(response.data.message || 'Error logging in');
+      }
+    } catch (err) {
+      // Handle any network or API errors
+      setError('Error logging in');
+    }
   };
 
   return (
     <section className="bg-gray-50 dark:bg-gray-900">
       <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
         <a href="#" className="flex items-center mb-6 text-2xl font-semibold text-gray-900 dark:text-white">
-        🙏 Welcome 
+          🙏 Welcome
         </a>
         <div className="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
           <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
@@ -77,6 +105,7 @@ const Login = () => {
               >
                 Sign in
               </button>
+              {error && <p className="text-red-500 text-sm">{error}</p>}
               <p className="text-sm font-light text-gray-500 dark:text-gray-400">
                 Don’t have an account yet? <a href="/register" className="font-medium text-primary-600 hover:underline dark:text-primary-500">Sign up</a>
               </p>
