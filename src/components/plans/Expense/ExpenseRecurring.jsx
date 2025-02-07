@@ -6,16 +6,18 @@ const RecurringExpense = () => {
   const [category, setCategory] = useState('');
   const [description, setDescription] = useState('');
   const [isRecurring, setIsRecurring] = useState(false);
-  const [interval, setInterval] = useState('Monthly');
+  const [interval, setInterval] = useState('Select');
   const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
 
-  const categories = ['Rent', 'Subscription', 'Utilities', 'Groceries'];
+  const categories = ['select','Rent', 'Subscription', 'Utilities', 'Groceries'];
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (!amount || !category || !description) {
       setError('All fields are required');
+      setSuccess('');
       return;
     }
 
@@ -24,39 +26,46 @@ const RecurringExpense = () => {
     try {
       const response = await api.post('/api/expenses/recurring', recurringData); // Adjust API endpoint
       if (response.status === 200) {
-        alert('Recurring expense added successfully!');
+        setSuccess('Recurring expense added successfully!');
+        setError('');
       } else {
         setError('Failed to add recurring expense');
+        setSuccess('');
       }
     } catch (err) {
       setError('Error adding recurring expense');
+      setSuccess('');
     }
   };
 
   return (
-    <section className="container mx-auto p-4">
-      <h2 className="text-2xl font-bold mb-4">Add Recurring Expense</h2>
-      {error && <div className="text-red-500">{error}</div>}
+    <section className="container mx-auto p-6 bg-white shadow-lg rounded-lg mt-8 max-w-xl">
+      <h2 className="text-3xl font-semibold text-center text-gray-700 mb-6">Add Recurring Expense</h2>
+
+      {error && <div className="text-red-500 text-center mb-4">{error}</div>}
+      {success && <div className="text-green-500 text-center mb-4">{success}</div>}
+
       <form onSubmit={handleSubmit}>
-        <div className="mb-4">
-          <label htmlFor="amount" className="block text-sm font-medium">Amount</label>
+        <div className="mb-6">
+          <label htmlFor="amount" className="block text-sm font-medium text-gray-700">Amount</label>
           <input
             type="number"
             id="amount"
             value={amount}
             onChange={(e) => setAmount(e.target.value)}
-            className="border p-2 rounded"
+            className="w-full border border-gray-300 p-3 rounded-md mt-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            placeholder="Enter amount"
             required
           />
         </div>
 
-        <div className="mb-4">
-          <label htmlFor="category" className="block text-sm font-medium">Category</label>
+        <div className="mb-6">
+          <label htmlFor="category" className="block text-sm font-medium text-gray-700">Category</label>
           <select
             id="category"
             value={category}
             onChange={(e) => setCategory(e.target.value)}
-            className="border p-2 rounded"
+            className="w-full border border-gray-300 p-3 rounded-md mt-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
             required
           >
             {categories.map((cat, index) => (
@@ -65,46 +74,50 @@ const RecurringExpense = () => {
           </select>
         </div>
 
-        <div className="mb-4">
-          <label htmlFor="description" className="block text-sm font-medium">Description</label>
+        <div className="mb-6">
+          <label htmlFor="description" className="block text-sm font-medium text-gray-700">Description</label>
           <textarea
             id="description"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
-            className="border p-2 rounded"
+            className="w-full border border-gray-300 p-3 rounded-md mt-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            placeholder="Details about the expense"
             required
           />
         </div>
 
-        <div className="mb-4">
-          <label htmlFor="isRecurring" className="inline-flex items-center text-sm">
-            <input
-              type="checkbox"
-              id="isRecurring"
-              checked={isRecurring}
-              onChange={() => setIsRecurring(!isRecurring)}
-              className="w-4 h-4"
-            />
-            <span className="ml-2">Is this a recurring expense?</span>
-          </label>
+        <div className="mb-6 flex items-center">
+          <input
+            type="checkbox"
+            id="isRecurring"
+            checked={isRecurring}
+            onChange={() => setIsRecurring(!isRecurring)}
+            className="w-4 h-4 border-gray-300 rounded"
+          />
+          <label htmlFor="isRecurring" className="ml-2 text-sm text-gray-700">Is this a recurring expense?</label>
         </div>
 
         {isRecurring && (
-          <div className="mb-4">
-            <label htmlFor="interval" className="block text-sm font-medium">Recurring Interval</label>
+          <div className="mb-6">
+            <label htmlFor="interval" className="block text-sm font-medium text-gray-700">Recurring Interval</label>
             <select
               id="interval"
               value={interval}
               onChange={(e) => setInterval(e.target.value)}
-              className="border p-2 rounded"
+              className="w-full border border-gray-300 p-3 rounded-md mt-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
+              <option value="Select">Select</option>
               <option value="Monthly">Monthly</option>
               <option value="Yearly">Yearly</option>
             </select>
           </div>
         )}
 
-        <button type="submit" className="bg-blue-500 text-white p-2 rounded">Submit</button>
+        <div className="flex justify-center">
+          <button type="submit" className="w-full bg-blue-500 text-white py-3 rounded-lg shadow-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500">
+            Submit
+          </button>
+        </div>
       </form>
     </section>
   );

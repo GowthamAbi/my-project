@@ -1,32 +1,32 @@
+// Login.js
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import api from '../../services/api'; // Your axios instance to communicate with backend
+import api from '../../services/api';// Your axios instance to communicate with backend
 
 const Login = () => {
-  // State hooks for form data
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [rememberMe, setRememberMe] = useState(false);
   const [error, setError] = useState('');
-  
+
   const navigate = useNavigate();
 
   // Handle login form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Prepare the user credentials for the request
     const userData = { email, password };
 
     try {
-      // Make the POST request to the login endpoint
       const response = await api.post('/api/auth/login', userData);
 
       if (response.status === 200) {
-        // Store the JWT token if login is successful
-        localStorage.setItem('authToken', response.data.token);
+        // Store the token in localStorage
+        const token = response.data.token;
+        localStorage.setItem('authToken', token);
+        console.log("Token stored in localStorage:", token); // Log to check if token is stored
 
-        // Optionally, store the "remember me" flag if you need to keep the session active
+        // Optionally, store the "remember me" flag if needed
         if (rememberMe) {
           localStorage.setItem('rememberMe', true);
         }
@@ -34,11 +34,9 @@ const Login = () => {
         // Navigate to the dashboard
         navigate('/dashboard');
       } else {
-        // Handle any errors returned from the server
         setError(response.data.message || 'Error logging in');
       }
     } catch (err) {
-      // Handle any network or API errors
       setError('Error logging in');
     }
   };
@@ -118,3 +116,4 @@ const Login = () => {
 };
 
 export default Login;
+

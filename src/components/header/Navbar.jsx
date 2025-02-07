@@ -15,7 +15,7 @@ const Navbar = () => {
   };
 
   const goHome = () => {
-    navigate('/'); // Redirect to home page
+    navigate('/home'); // Redirect to home page
   }
   // Close the profile menu if clicked outside
   useEffect(() => {

@@ -1,6 +1,6 @@
 import React from 'react';
 import ExpenseRecording from '../plans/Expense/Expense'; // Path to ExpenseRecording component
-import ExpenseCategorization from '../plans/Expense/Chart'; // Path to ExpenseCategorization component
+import ExpenseCategorization from '../plans/Expense/ExpenseCategorization'; // Path to ExpenseCategorization component
 import RecurringExpense from '../plans/Expense/ExpenseRecurring'; // Path to RecurringExpense component
 
 const Dashboard = () => {
