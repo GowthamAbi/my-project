@@ -32,7 +32,7 @@ const Dashboard = () => {
             const [expenseRes, budgetRes, billsRes] = await Promise.all([
                 api.get('/api/expenses'),
                 api.get('/api/budgets'),
-                api.get('/api/due-bills'),
+                api.get('/api/email'),
             ]);
             setExpenses(expenseRes.data);
             setBudgets(budgetRes.data);
