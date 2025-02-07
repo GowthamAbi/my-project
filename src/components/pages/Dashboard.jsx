@@ -1,77 +1,152 @@
-//Dashboard.jsx
+import React, { useState, useEffect } from 'react';
+import { Bar } from 'react-chartjs-2';
+import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from 'chart.js';
+import api from '../../services/api';
 
-import React from 'react';
-import ExpenseRecording from '../plans/Expense/Expense'; // Path to ExpenseRecording component
-import ExpenseCategorization from '../plans/Expense/ExpenseCategorization'; // Path to ExpenseCategorization component
-import RecurringExpense from '../plans/Expense/ExpenseRecurring'; // Path to RecurringExpense component
-import ExpenseList from '../plans/Expense/ExpenseList'; // Path to ExpenseRecording component
+// Import all required components
+import ExpenseRecording from '../plans/Expense/Expense';
+import ExpenseList from '../plans/Expense/ExpenseList';
+import ExpenseCategorization from '../plans/Expense/ExpenseCategorization';
+import RecurringExpense from '../plans/Expense/ExpenseRecurring';
 import RecurringExpenseList from '../plans/Expense/RecurringExpenseList';
 import BudgetForm from '../plans/Budget/BudgetForm';
 import BudgetChart from '../plans/Budget/BudgetChart';
 import FinancialGoals from '../plans/Goals/FinancialGoals';
 import FinancialReports from '../plans/Report/FinancialReports';
-import IncomeForm from '../plans/Income/IncomeForm';
-import IncomeList from '../plans/Income/IncomeList';
 import IncomeReports from '../plans/Income/IncomeReports';
 
+ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
 const Dashboard = () => {
-  return (
-    <div className="container mx-auto p-4 dark:bg-gray-900"><div>
-      <h1 className="text-3xl font-bold text-center mb-8">Expense Tracking Dashboard</h1>
-      
-      {/* Expense Recording Section */}
-      <section className="mb-8">
-        <ExpenseRecording />
-      </section>
+    const [expenses, setExpenses] = useState([]);
+    const [budgets, setBudgets] = useState([]);
+    const [dueBills, setDueBills] = useState([]);
+    const [darkMode, setDarkMode] = useState(false);
 
-      {/* Expense Recording List Section */}
-      <section className="mb-8">
-        <ExpenseList />
-      </section>
+    useEffect(() => {
+        fetchDashboardData();
+    }, []);
 
-      {/* Expense Categorization Section with Charts */}
-      <section className="mb-8">
-        <ExpenseCategorization />
-      </section>
+    const fetchDashboardData = async () => {
+        try {
+            const [expenseRes, budgetRes, billsRes] = await Promise.all([
+                api.get('/api/expenses'),
+                api.get('/api/budgets'),
+                api.get('/api/due-bills'),
+            ]);
+            setExpenses(expenseRes.data);
+            setBudgets(budgetRes.data);
+            setDueBills(billsRes.data);
+        } catch (error) {
+            console.error('Error fetching dashboard data', error);
+        }
+    };
 
-      {/* Recurring Expenses Section */}
-      <section className="mb-8">
-        <RecurringExpense />
-      </section>
-      
-      {/* Recurring Expenses List Section */}
-      <section className="mb-8">
-        <RecurringExpenseList />
-      </section>
-      </div>
-      <div>
-      <h1 className="text-3xl font-bold text-center mb-8">Budget</h1>
-            
-      {/* BudgetForm Section */}
-      <section className="mb-8">
-        <BudgetForm />
-      </section>
+    const chartData = {
+        labels: budgets.map((b) => b.category),
+        datasets: [
+            { label: 'Budget', data: budgets.map((b) => b.amount), backgroundColor: '#3b82f6' },
+            { label: 'Spent', data: budgets.map((b) => expenses.filter(e => e.category === b.category).reduce((sum, e) => sum + e.amount, 0)), backgroundColor: '#ef4444' },
+        ],
+    };
 
-      {/* BudgetChart Section */}
-      <section className="mb-8">
-        <BudgetChart />
-      </section>
-      </div>
-     {/* Goals Section */}
-      <div>
-        <FinancialGoals />
-      </div>
-           {/* Report Section */}
-           <div>
-        <FinancialReports />
-      </div>
+    return (
+        <div className={`${darkMode ? 'bg-gray-900 text-white' : 'bg-gray-100 text-gray-900'} min-h-screen p-6`}>
+            {/* Header & Toggle */}
+            <div className="flex justify-between items-center mb-6">
+                <h1 className="text-3xl font-bold">📊 Expense Dashboard</h1>
+                <button className="p-2 rounded-lg bg-blue-600 text-white" onClick={() => setDarkMode(!darkMode)}>
+                    {darkMode ? '☀️ Light Mode' : '🌙 Dark Mode'}
+                </button>
+            </div>
 
-      <div>
-        <IncomeReports/>
-      </div>
-    </div>
-  );
+            {/* Expense Summary Cards */}
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+                <div className="bg-blue-500 text-white p-6 rounded-lg shadow-md">
+                    <h2 className="text-lg">Total Budget</h2>
+                    <p className="text-2xl font-bold">${budgets.reduce((sum, b) => sum + b.amount, 0)}</p>
+                </div>
+                <div className="bg-red-500 text-white p-6 rounded-lg shadow-md">
+                    <h2 className="text-lg">Total Expenses</h2>
+                    <p className="text-2xl font-bold">${expenses.reduce((sum, e) => sum + e.amount, 0)}</p>
+                </div>
+                <div className="bg-green-500 text-white p-6 rounded-lg shadow-md">
+                    <h2 className="text-lg">Remaining Budget</h2>
+                    <p className="text-2xl font-bold">${budgets.reduce((sum, b) => sum + b.amount, 0) - expenses.reduce((sum, e) => sum + e.amount, 0)}</p>
+                </div>
+            </div>
+
+            {/* Budget vs Expenses Chart */}
+            <div className="bg-white p-6 rounded-lg shadow-md mt-6">
+                <h2 className="text-xl font-bold mb-4">Budget vs. Expenses</h2>
+                <Bar data={chartData} />
+            </div>
+
+            {/* Upcoming Bills Section */}
+            {dueBills.length > 0 && (
+                <div className="bg-yellow-200 p-6 rounded-lg shadow-md mt-6">
+                    <h2 className="text-xl font-bold text-yellow-900">⚠️ Upcoming Bills</h2>
+                    <ul className="mt-2">
+                        {dueBills.map((bill, index) => (
+                            <li key={index} className="text-yellow-800">{bill.name} - Due on {new Date(bill.dueDate).toLocaleDateString()}</li>
+                        ))}
+                    </ul>
+                </div>
+            )}
+
+            {/* Expense Management Sections */}
+            <div className="bg-white p-6 rounded-lg shadow-md mt-6">
+                <h2 className="text-2xl font-bold text-center">💰 Expense Management</h2>
+                <section className="mb-8">
+                    <ExpenseRecording />
+                </section>
+
+                <section className="mb-8">
+                    <ExpenseList />
+                </section>
+
+                <section className="mb-8">
+                    <ExpenseCategorization />
+                </section>
+
+                <section className="mb-8">
+                    <RecurringExpense />
+                </section>
+
+                <section className="mb-8">
+                    <RecurringExpenseList />
+                </section>
+            </div>
+
+            {/* Budget Management Sections */}
+            <div className="bg-white p-6 rounded-lg shadow-md mt-6">
+                <h2 className="text-2xl font-bold text-center">📊 Budget & Goals</h2>
+                <section className="mb-8">
+                    <BudgetForm />
+                </section>
+
+                <section className="mb-8">
+                    <BudgetChart />
+                </section>
+            </div>
+
+            {/* Financial Goals & Reports */}
+            <div className="bg-white p-6 rounded-lg shadow-md mt-6">
+                <h2 className="text-2xl font-bold text-center">🎯 Financial Goals</h2>
+                <FinancialGoals />
+            </div>
+
+            <div className="bg-white p-6 rounded-lg shadow-md mt-6">
+                <h2 className="text-2xl font-bold text-center">📑 Financial Reports</h2>
+                <FinancialReports />
+            </div>
+
+            <div className="bg-white p-6 rounded-lg shadow-md mt-6">
+                <h2 className="text-2xl font-bold text-center">💵 Income Reports</h2>
+                <IncomeReports />
+            </div>
+        </div>
+    );
 };
 
 export default Dashboard;
