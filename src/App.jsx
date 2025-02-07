@@ -3,6 +3,8 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Navbar from './components/header/Navbar';
 import Login from './components/pages/Login';
 import Register from './components/pages/Register';
+import Home from './components/pages/Home';
+import Dashboard from './components/pages/Dashboard';
 
 
 
@@ -13,6 +15,8 @@ const App = () => {
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/home" element={<Home />} />
+        <Route path="/dashboard" element={<Dashboard />} />
       </Routes>
     </Router>
   );

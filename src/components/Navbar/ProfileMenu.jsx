@@ -14,7 +14,7 @@ const ProfileMenu = () => {
   const logout = () => {
     
     document.cookie = 'yourCookieName=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;'; 
-    navigate('/');
+    navigate('/home');
   };
   const handleMouseEnter = () => {
     setIsVisible(true);
