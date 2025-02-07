@@ -135,6 +135,7 @@ const ExpenseRecording = () => {
         Submit Expense
       </button>
     </form>
+    <button >ExpenseList</button>
   </section>
   );
 };
