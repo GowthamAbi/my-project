@@ -1,3 +1,5 @@
+//Dashboard.jsx
+
 import React from 'react';
 import ExpenseRecording from '../plans/Expense/Expense'; // Path to ExpenseRecording component
 import ExpenseCategorization from '../plans/Expense/ExpenseCategorization'; // Path to ExpenseCategorization component
@@ -8,11 +10,14 @@ import BudgetForm from '../plans/Budget/BudgetForm';
 import BudgetChart from '../plans/Budget/BudgetChart';
 import FinancialGoals from '../plans/Goals/FinancialGoals';
 import FinancialReports from '../plans/Report/FinancialReports';
+import IncomeForm from '../plans/Income/IncomeForm';
+import IncomeList from '../plans/Income/IncomeList';
+import IncomeReports from '../plans/Income/IncomeReports';
 
 
 const Dashboard = () => {
   return (
-    <div className="container mx-auto p-4"><div>
+    <div className="container mx-auto p-4 dark:bg-gray-900"><div>
       <h1 className="text-3xl font-bold text-center mb-8">Expense Tracking Dashboard</h1>
       
       {/* Expense Recording Section */}
@@ -60,6 +65,10 @@ const Dashboard = () => {
            {/* Report Section */}
            <div>
         <FinancialReports />
+      </div>
+
+      <div>
+        <IncomeReports/>
       </div>
     </div>
   );

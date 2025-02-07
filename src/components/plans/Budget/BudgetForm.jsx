@@ -35,7 +35,7 @@ const[error,setError]=useState('')
 
   return (
     <div>
-    <form onSubmit={handleSubmit} className="space-y-2">
+    <form onSubmit={handleSubmit} className="space-y-2 dark:bg-gray-900">
       <input type="text" value={category} required onChange={(e) => setCategory(e.target.value)}
         placeholder="Category" className="border p-2 w-full"/>
       <input type="number" value={amount} required onChange={(e) => setAmount(e.target.value)}
