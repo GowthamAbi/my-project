@@ -2,6 +2,9 @@ import React from 'react';
 import ExpenseRecording from '../plans/Expense/Expense'; // Path to ExpenseRecording component
 import ExpenseCategorization from '../plans/Expense/ExpenseCategorization'; // Path to ExpenseCategorization component
 import RecurringExpense from '../plans/Expense/ExpenseRecurring'; // Path to RecurringExpense component
+import ExpenseList from '../plans/Expense/ExpenseList'; // Path to ExpenseRecording component
+import RecurringExpenseList from '../plans/Expense/RecurringExpenseList';
+
 
 const Dashboard = () => {
   return (
@@ -13,6 +16,11 @@ const Dashboard = () => {
         <ExpenseRecording />
       </section>
 
+      {/* Expense Recording Section */}
+      <section className="mb-8">
+        <ExpenseList />
+      </section>
+
       {/* Expense Categorization Section with Charts */}
       <section className="mb-8">
         <ExpenseCategorization />
@@ -21,6 +29,11 @@ const Dashboard = () => {
       {/* Recurring Expenses Section */}
       <section className="mb-8">
         <RecurringExpense />
+      </section>
+      
+      {/* Recurring Expenses Section */}
+      <section className="mb-8">
+        <RecurringExpenseList />
       </section>
     </div>
   );

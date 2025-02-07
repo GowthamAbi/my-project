@@ -9,7 +9,7 @@ const RecurringExpense = () => {
   const [interval, setInterval] = useState('Select');
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
-
+  
   const categories = ['select','Rent', 'Subscription', 'Utilities', 'Groceries'];
 
   const handleSubmit = async (e) => {
@@ -18,6 +18,7 @@ const RecurringExpense = () => {
     if (!amount || !category || !description) {
       setError('All fields are required');
       setSuccess('');
+
       return;
     }
 
@@ -25,9 +26,16 @@ const RecurringExpense = () => {
 
     try {
       const response = await api.post('/api/expenses/recurring', recurringData); // Adjust API endpoint
-      if (response.status === 200) {
+      console.log(response.status)
+      if (response.status === 201) {
         setSuccess('Recurring expense added successfully!');
+        setAmount('');
+        
         setError('');
+        setCategory('')
+        setDescription('')
+        setIsRecurring(false)
+        setInterval('Select')
       } else {
         setError('Failed to add recurring expense');
         setSuccess('');
