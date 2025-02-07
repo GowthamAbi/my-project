@@ -6,6 +6,8 @@ import ExpenseList from '../plans/Expense/ExpenseList'; // Path to ExpenseRecord
 import RecurringExpenseList from '../plans/Expense/RecurringExpenseList';
 import BudgetForm from '../plans/Budget/BudgetForm';
 import BudgetChart from '../plans/Budget/BudgetChart';
+import FinancialGoals from '../plans/Goals/FinancialGoals';
+import FinancialReports from '../plans/Report/FinancialReports';
 
 
 const Dashboard = () => {
@@ -50,6 +52,14 @@ const Dashboard = () => {
       <section className="mb-8">
         <BudgetChart />
       </section>
+      </div>
+     {/* Goals Section */}
+      <div>
+        <FinancialGoals />
+      </div>
+           {/* Report Section */}
+           <div>
+        <FinancialReports />
       </div>
     </div>
   );
