@@ -4,11 +4,13 @@ import ExpenseCategorization from '../plans/Expense/ExpenseCategorization'; // P
 import RecurringExpense from '../plans/Expense/ExpenseRecurring'; // Path to RecurringExpense component
 import ExpenseList from '../plans/Expense/ExpenseList'; // Path to ExpenseRecording component
 import RecurringExpenseList from '../plans/Expense/RecurringExpenseList';
+import BudgetForm from '../plans/Budget/BudgetForm';
+import BudgetChart from '../plans/Budget/BudgetChart';
 
 
 const Dashboard = () => {
   return (
-    <div className="container mx-auto p-4">
+    <div className="container mx-auto p-4"><div>
       <h1 className="text-3xl font-bold text-center mb-8">Expense Tracking Dashboard</h1>
       
       {/* Expense Recording Section */}
@@ -16,7 +18,7 @@ const Dashboard = () => {
         <ExpenseRecording />
       </section>
 
-      {/* Expense Recording Section */}
+      {/* Expense Recording List Section */}
       <section className="mb-8">
         <ExpenseList />
       </section>
@@ -31,10 +33,24 @@ const Dashboard = () => {
         <RecurringExpense />
       </section>
       
-      {/* Recurring Expenses Section */}
+      {/* Recurring Expenses List Section */}
       <section className="mb-8">
         <RecurringExpenseList />
       </section>
+      </div>
+      <div>
+      <h1 className="text-3xl font-bold text-center mb-8">Budget</h1>
+            
+      {/* BudgetForm Section */}
+      <section className="mb-8">
+        <BudgetForm />
+      </section>
+
+      {/* BudgetChart Section */}
+      <section className="mb-8">
+        <BudgetChart />
+      </section>
+      </div>
     </div>
   );
 };
