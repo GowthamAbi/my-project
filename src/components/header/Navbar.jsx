@@ -36,15 +36,13 @@ const Navbar = () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
-  const [darkMode, setDarkMode] = useState(false);
+
   return (
     <>
       <nav className="bg-blue-600 p-4 text-white flex justify-between">
         <div>Logo</div>
         <div className="text-2xl font-bold cursor-pointer" onClick={goHome}>Finance Manager</div>
-        <button onClick={() => setDarkMode(!darkMode)}>
-                {darkMode ? '☀️ Light Mode' : '🌙 Dark Mode'}
-            </button>
+
         <div className="flex items-center space-x-10">
           <NotificationBell />
           <div className="relative">

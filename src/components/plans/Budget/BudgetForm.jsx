@@ -35,15 +35,17 @@ const[error,setError]=useState('')
 
   return (
     <div>
+      <section className="container mx-auto p-6 bg-white shadow-lg rounded-lg mt-8 max-w-xl">
     <form onSubmit={handleSubmit} className="space-y-2 dark:bg-gray-900">
+      <h2 className="text-3xl font-semibold text-center text-black-700 mb-8">BudgetForm</h2>
       <input type="text" value={category} required onChange={(e) => setCategory(e.target.value)}
-        placeholder="Category" className="border p-2 w-full"/>
+        placeholder="Category" className="w-full border border-gray-300 p-3 rounded-md mt-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
       <input type="number" value={amount} required onChange={(e) => setAmount(e.target.value)}
-        placeholder="Amount" className="border p-2 w-full"/>
-      <button type="submit" className="bg-blue-500 text-white p-2">Add Budget</button>
+        placeholder="Amount" className="w-full border border-gray-300 p-3 rounded-md mt-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+      <button type="submit" className="w-full bg-blue-500 text-white py-3 rounded-lg shadow-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500">Add Budget</button>
     </form>
-    <div><ExportData/></div>
-    <div><BudgetChart/></div>
+    </section>
+
 
     </div>
   );

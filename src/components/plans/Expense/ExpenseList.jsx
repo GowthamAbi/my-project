@@ -49,7 +49,7 @@ const ExpenseList = () => {
       ) : (
         <p className="text-center text-gray-500">No expenses found</p>
       )}
-      <button>ExpenseCategorization</button>
+     
     </section>
   );
 };

@@ -6,6 +6,9 @@ import Register from './components/pages/Register';
 import Home from './components/pages/Home';
 import Dashboard from './components/pages/Dashboard';
 import NotificationBell from './components/Navbar/NotificationBell';
+import RecurringExpense from './components/plans/Expense/ExpenseRecurring';
+import BudgetForm from './components/plans/Budget/BudgetForm';
+import BudgetList from './components/plans/Budget/BudgetList';
 
 
 
@@ -19,6 +22,9 @@ const App = () => {
         <Route path="/register" element={<Register />} />
         <Route path="/" element={<Home />} />
         <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/recurringExpense" element={<RecurringExpense/>} />
+        <Route path="/budgetForm" element={<BudgetForm/>} />
+        <Route path="/budgetList" element={<BudgetList/>} />
       </Routes>
     </Router>
   );
