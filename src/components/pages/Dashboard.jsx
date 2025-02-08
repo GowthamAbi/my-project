@@ -32,24 +32,47 @@ const Dashboard = () => {
             const [expenseRes, budgetRes, billsRes] = await Promise.all([
                 api.get('/api/expenses'),
                 api.get('/api/budgets'),
-                api.get('/api/email'),
+                api.get('/api/due-bills'), // ✅ Fixed API route
             ]);
             setExpenses(expenseRes.data);
             setBudgets(budgetRes.data);
             setDueBills(billsRes.data);
         } catch (error) {
-            console.error('Error fetching dashboard data', error);
+            console.error('❌ Error fetching dashboard data:', error);
         }
     };
 
     const chartData = {
         labels: budgets.map((b) => b.category),
         datasets: [
-            { label: 'Budget', data: budgets.map((b) => b.amount), backgroundColor: '#3b82f6' },
-            { label: 'Spent', data: budgets.map((b) => expenses.filter(e => e.category === b.category).reduce((sum, e) => sum + e.amount, 0)), backgroundColor: '#ef4444' },
-        ],
+            {
+                label: 'Budget',
+                data: budgets.map((b) => b.amount),
+                backgroundColor: '#3b82f6'
+            },
+            {
+                label: 'Spent',
+                data: budgets.map((b) => {
+                    const totalSpent = expenses
+                        .filter((e) => e.category === b.category)
+                        .reduce((sum, e) => sum + e.amount, 0);
+    
+                    // 🔔 Show alert if spent amount is greater than budget
+                    if (totalSpent > b.amount) {
+                        alert(`⚠️ Warning: Expenses for '${b.category}' exceed budget!`);
+                    }
+    
+                    return totalSpent;
+                }),
+                backgroundColor: '#ef4444'
+            }
+        ]
     };
-
+    
+      
+        
+    
+    
     return (
         <div className={`${darkMode ? 'bg-gray-900 text-white' : 'bg-gray-100 text-gray-900'} min-h-screen p-6`}>
             {/* Header & Toggle */}
@@ -82,13 +105,15 @@ const Dashboard = () => {
                 <Bar data={chartData} />
             </div>
 
-            {/* Upcoming Bills Section */}
+            {/* 🔔 Upcoming Bills Section */}
             {dueBills.length > 0 && (
                 <div className="bg-yellow-200 p-6 rounded-lg shadow-md mt-6">
                     <h2 className="text-xl font-bold text-yellow-900">⚠️ Upcoming Bills</h2>
                     <ul className="mt-2">
                         {dueBills.map((bill, index) => (
-                            <li key={index} className="text-yellow-800">{bill.name} - Due on {new Date(bill.dueDate).toLocaleDateString()}</li>
+                            <li key={index} className="text-yellow-800">
+                                {bill.name} - Due on {new Date(bill.dueDate).toLocaleDateString()}
+                            </li>
                         ))}
                     </ul>
                 </div>
@@ -97,54 +122,24 @@ const Dashboard = () => {
             {/* Expense Management Sections */}
             <div className="bg-white p-6 rounded-lg shadow-md mt-6">
                 <h2 className="text-2xl font-bold text-center">💰 Expense Management</h2>
-                <section className="mb-8">
-                    <ExpenseRecording />
-                </section>
-
-                <section className="mb-8">
-                    <ExpenseList />
-                </section>
-
-                <section className="mb-8">
-                    <ExpenseCategorization />
-                </section>
-
-                <section className="mb-8">
-                    <RecurringExpense />
-                </section>
-
-                <section className="mb-8">
-                    <RecurringExpenseList />
-                </section>
+                <section className="mb-8"><ExpenseRecording /></section>
+                <section className="mb-8"><ExpenseList /></section>
+                <section className="mb-8"><ExpenseCategorization /></section>
+                <section className="mb-8"><RecurringExpense /></section>
+                <section className="mb-8"><RecurringExpenseList /></section>
             </div>
 
             {/* Budget Management Sections */}
             <div className="bg-white p-6 rounded-lg shadow-md mt-6">
                 <h2 className="text-2xl font-bold text-center">📊 Budget & Goals</h2>
-                <section className="mb-8">
-                    <BudgetForm />
-                </section>
-
-                <section className="mb-8">
-                    <BudgetChart />
-                </section>
+                <section className="mb-8"><BudgetForm /></section>
+                <section className="mb-8"><BudgetChart /></section>
             </div>
 
             {/* Financial Goals & Reports */}
-            <div className="bg-white p-6 rounded-lg shadow-md mt-6">
-                <h2 className="text-2xl font-bold text-center">🎯 Financial Goals</h2>
-                <FinancialGoals />
-            </div>
-
-            <div className="bg-white p-6 rounded-lg shadow-md mt-6">
-                <h2 className="text-2xl font-bold text-center">📑 Financial Reports</h2>
-                <FinancialReports />
-            </div>
-
-            <div className="bg-white p-6 rounded-lg shadow-md mt-6">
-                <h2 className="text-2xl font-bold text-center">💵 Income Reports</h2>
-                <IncomeReports />
-            </div>
+            <div className="bg-white p-6 rounded-lg shadow-md mt-6"><FinancialGoals /></div>
+            <div className="bg-white p-6 rounded-lg shadow-md mt-6"><FinancialReports /></div>
+            <div className="bg-white p-6 rounded-lg shadow-md mt-6"><IncomeReports /></div>
         </div>
     );
 };

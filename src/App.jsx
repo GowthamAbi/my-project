@@ -5,6 +5,7 @@ import Login from './components/pages/Login';
 import Register from './components/pages/Register';
 import Home from './components/pages/Home';
 import Dashboard from './components/pages/Dashboard';
+import NotificationBell from './components/Navbar/NotificationBell';
 
 
 
@@ -12,6 +13,7 @@ const App = () => {
   return (  
     <Router>
       <Navbar />
+      <NotificationBell />
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />

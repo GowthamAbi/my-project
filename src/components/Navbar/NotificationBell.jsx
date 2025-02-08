@@ -1,16 +1,25 @@
 import React, { useState, useEffect } from 'react';
-import { io } from 'socket.io-client';
+import io from 'socket.io-client';
 
 const NotificationBell = () => {
     const [notifications, setNotifications] = useState([]);
 
     useEffect(() => {
-        const socket = io('http://localhost:5000');
+        // Connect to the backend server for real-time notifications
+        const socket = io('http://localhost:3000', {
+            withCredentials: true, // This ensures cookies/credentials are sent
+          });
+
+        // Listen for 'budgetAlert' event from the server
         socket.on('budgetAlert', (alert) => {
-            setNotifications((prev) => [...prev, alert]);
+            // Adding a timestamp to each notification for better context
+            setNotifications((prev) => [
+                ...prev,
+                { ...alert, timestamp: new Date() }
+            ]);
         });
 
-        return () => socket.disconnect();
+        return () => socket.disconnect();  // Clean up the socket connection on component unmount
     }, []);
 
     return (
@@ -23,11 +32,17 @@ const NotificationBell = () => {
                     </span>
                 )}
             </button>
+
+            {/* Show notifications in a dropdown-style UI */}
             {notifications.length > 0 && (
                 <div className="absolute right-0 mt-2 w-40 bg-white shadow-md rounded-lg">
                     {notifications.map((note, index) => (
                         <div key={index} className="text-black px-4 py-2">
-                            {note}
+                            {/* Display the notification message and timestamp */}
+                            <div>{note.message}</div>
+                            <div className="text-xs text-gray-500">
+                                {new Date(note.timestamp).toLocaleString()}
+                            </div>
                         </div>
                     ))}
                 </div>

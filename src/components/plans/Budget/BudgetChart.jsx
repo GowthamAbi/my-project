@@ -17,7 +17,7 @@ const BudgetChart = () => {
     const fetchBudgets = async () => {
       try {
         const response = await api.get("/api/budgets"); // 🔹 Update with your backend API
-        console.log("API Response:", response.data);
+    
         setBudgets(response.data);
       } catch (err) {
         console.error("Error fetching budget data:", err);

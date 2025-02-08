@@ -11,7 +11,7 @@ const ExportData = () => {
     setLoading(true);
     try {
       const response = await api.get("/api/budgets"); // ✅ Ensure correct API endpoint
-      console.log("API Response:", response.data); // ✅ Log API response for debugging
+
 
       if (Array.isArray(response.data) && response.data.length > 0) {
         setBudgets(response.data);
