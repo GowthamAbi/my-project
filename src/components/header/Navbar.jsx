@@ -39,7 +39,7 @@ const Navbar = () => {
 
   return (
     <>
-      <nav className="bg-blue-600 p-4 text-white flex justify-between">
+      <nav className=" bg-blue-600 p-4 text-white flex justify-between">
         <div>Logo</div>
         <div className="text-2xl font-bold cursor-pointer" onClick={goHome}>Finance Manager</div>
 
