@@ -1,30 +1,29 @@
-import React, { useState, useEffect } from 'react';
-import io from 'socket.io-client';
+import React, { useState, useEffect } from "react";
+import { io } from "socket.io-client";
 
 const NotificationBell = () => {
     const [notifications, setNotifications] = useState([]);
     const [showDropdown, setShowDropdown] = useState(false);
 
     useEffect(() => {
-        // Connect to the backend Socket.io server
-        const socket = io('http://localhost:5000'); // Ensure this matches your backend server
-
-        // Listen for 'budgetAlert' event
-        socket.on('budgetAlert', (alert) => {
-            setNotifications((prev) => [
-                ...prev,
-                { message: alert, timestamp: new Date() }
-            ]);
+        // ✅ Connect to WebSocket with correct settings
+        const socket = io("http://localhost:5000", {
+            transports: ["websocket", "polling"], // ✅ Ensures WebSocket works
+            withCredentials: true, // Allows cross-origin cookies
         });
 
-        return () => socket.disconnect(); // Clean up connection
+        // ✅ Listen for budget alerts
+        socket.on("budgetAlert", (alert) => {
+            setNotifications((prev) => [...prev, { message: alert, timestamp: new Date() }]);
+        });
+
+        return () => socket.disconnect(); // Cleanup on component unmount
     }, []);
 
     return (
         <div className="relative">
-            {/* Notification Bell Button */}
-            <button 
-                className="text-white relative" 
+            <button
+                className="text-white relative"
                 onClick={() => setShowDropdown(!showDropdown)}
             >
                 <i className="fas fa-bell text-2xl"></i>
@@ -35,7 +34,7 @@ const NotificationBell = () => {
                 )}
             </button>
 
-            {/* Dropdown Notifications */}
+            {/* Notification Dropdown */}
             {showDropdown && notifications.length > 0 && (
                 <div className="absolute right-0 mt-2 w-64 bg-white shadow-md rounded-lg overflow-hidden">
                     {notifications.map((note, index) => (
