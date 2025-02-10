@@ -21,7 +21,7 @@ const App = () => {
         
         {/* Main Layout with Sidebar and Content */}
         <div className="flex flex-grow">
-          {/* Sidebar Stays Fixed */}
+          {/* Sidebar Stays F*/}
           <Sidebar />
 
           {/* Main Content Area */}
