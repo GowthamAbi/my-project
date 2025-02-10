@@ -1,13 +1,11 @@
-//Footer .jsx
-const Footer=()=>{
-   
-    return(
-<>
-    <footer className="bg-gray-300 p-4 text-white flex justify-between">
-   
-    </footer>
-    </>
-    )
-}
-
-export default Footer;
+// src/components/Footer.js
+const Footer = () => {
+    return (
+      <footer className="bg-gray-800 text-white text-center py-4">
+        <p>© {new Date().getFullYear()} Personal Finance Manager. All rights reserved.</p>
+      </footer>
+    );
+  };
+  
+  export default Footer;
+  

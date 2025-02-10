@@ -1,10 +1,13 @@
-// services/api.js (Create or modify this file for the API instance)
+// services/api.js (Updated API instance)
 
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: 'http://localhost:3000', // replace with your backend URL
-  withCredentials: true, // Make sure cookies are included in the request
+  baseURL: 'http://localhost:3000', // Ensure this matches your backend URL
+  withCredentials: true, // Allow cookies and credentials
+  headers: {
+    'Content-Type': 'application/json',
+  },
 });
 
 api.interceptors.request.use(

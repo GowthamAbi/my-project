@@ -1,6 +1,5 @@
-//Monthly payment Add
 import React, { useState } from 'react';
-import api from '../../../services/api'; // Assuming your API file to handle backend requests
+import api from '../../../services/api';
 
 const RecurringExpense = () => {
   const [amount, setAmount] = useState('');
@@ -8,10 +7,11 @@ const RecurringExpense = () => {
   const [description, setDescription] = useState('');
   const [isRecurring, setIsRecurring] = useState(false);
   const [interval, setInterval] = useState('Select');
+  const [nextDue, setNextDue] = useState(''); // ✅ Added nextDue field
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
-  
-  const categories = ['select','Rent', 'Subscription', 'Utilities', 'Groceries'];
+
+  const categories = ['Select', 'Rent', 'Subscription', 'Utilities', 'Groceries'];
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -19,24 +19,33 @@ const RecurringExpense = () => {
     if (!amount || !category || !description) {
       setError('All fields are required');
       setSuccess('');
-
       return;
     }
 
-    const recurringData = { amount, category, description, isRecurring, interval };
+    if (isRecurring && (interval === 'Select' || !nextDue)) {
+      setError('Please select a valid interval and due date for recurring expenses');
+      return;
+    }
+
+    const recurringData = {
+      amount,
+      category,
+      description,
+      isRecurring, // ✅ Ensure this is `true`
+      ...(isRecurring && { interval, nextDue: new Date(nextDue) }) // ✅ Include only for recurring expenses
+    };
 
     try {
-      const response = await api.post('/api/expenses/recurring', recurringData); // Adjust API endpoint
-      console.log(response.status)
+      const response = await api.post('/api/expenses/recurring', recurringData);
       if (response.status === 201) {
         setSuccess('Recurring expense added successfully!');
         setAmount('');
-        
+        setCategory('');
+        setDescription('');
+        setIsRecurring(false);
+        setInterval('Select');
+        setNextDue('');
         setError('');
-        setCategory('')
-        setDescription('')
-        setIsRecurring(false)
-        setInterval('Select')
       } else {
         setError('Failed to add recurring expense');
         setSuccess('');
@@ -107,19 +116,34 @@ const RecurringExpense = () => {
         </div>
 
         {isRecurring && (
-          <div className="mb-6">
-            <label htmlFor="interval" className="block text-sm font-medium text-gray-700">Recurring Interval</label>
-            <select
-              id="interval"
-              value={interval}
-              onChange={(e) => setInterval(e.target.value)}
-              className="w-full border border-gray-300 p-3 rounded-md mt-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-            >
-              <option value="Select">Select</option>
-              <option value="Monthly">Monthly</option>
-              <option value="Yearly">Yearly</option>
-            </select>
-          </div>
+          <>
+            <div className="mb-6">
+              <label htmlFor="interval" className="block text-sm font-medium text-gray-700">Recurring Interval</label>
+              <select
+                id="interval"
+                value={interval}
+                onChange={(e) => setInterval(e.target.value)}
+                className="w-full border border-gray-300 p-3 rounded-md mt-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                required
+              >
+                <option value="Select">Select</option>
+                <option value="Monthly">Monthly</option>
+                <option value="Yearly">Yearly</option>
+              </select>
+            </div>
+
+            <div className="mb-6">
+              <label htmlFor="nextDue" className="block text-sm font-medium text-gray-700">Next Due Date</label>
+              <input
+                type="date"
+                id="nextDue"
+                value={nextDue}
+                onChange={(e) => setNextDue(e.target.value)}
+                className="w-full border border-gray-300 p-3 rounded-md mt-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                required
+              />
+            </div>
+          </>
         )}
 
         <div className="flex justify-center">
