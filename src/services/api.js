@@ -1,30 +1,16 @@
-// services/api.js (Updated API instance)
-
-import axios from 'axios';
-
+// Add authentication token to API calls (api.js)
+import axios from "axios";
 const api = axios.create({
-  baseURL: 'http://localhost:3000', // Ensure this matches your backend URL
-  withCredentials: true, // Allow cookies and credentials
+  baseURL: "http://localhost:3000", // Ensure backend is running on this port
   headers: {
-    'Content-Type': 'application/json',
+    "Content-Type": "application/json",
   },
 });
-
-api.interceptors.request.use(
-  (config) => {
-    // Get the token from localStorage
-    const token = localStorage.getItem('authToken');
-    
-    // If token exists, add Authorization header
-    if (token) {
-      config.headers['Authorization'] = `Bearer ${token}`;
-    }
-    
-    return config;
-  },
-  (error) => {
-    return Promise.reject(error);
+api.interceptors.request.use((config) => {
+  const token = localStorage.getItem("authToken");
+  if (token) {
+    config.headers["Authorization"] = `Bearer ${token}`;
   }
-);
-
+  return config;
+});
 export default api;

@@ -1,145 +1,90 @@
-import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { FiHome, FiUser, FiSettings,FiSum, FiLogOut } from "react-icons/fi";
-import { FiDollarSign, FiTrendingDown, FiTrendingUp } from "react-icons/fi";
-import { FaCalculator } from "react-icons/fa";  // FontAwesome calculator
-import { MdSummarize } from "react-icons/md";   // Material UI summarize icon
-
-import { FaMoneyBillWave, FaClipboardList, FaBullseye, FaWallet, FaChartPie, FaFileExport } from "react-icons/fa";
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { FaChartPie, FaFileExport, FaMoneyBillWave, FaClipboardList, FaBullseye, FaWallet } from "react-icons/fa";
 
 const Sidebar = () => {
   const navigate = useNavigate();
-  const [openSections, setOpenSections] = useState({
-    dashboard: false,
-    budget: false,
-    expense: false,
-    income: false,
-  });
+  const [openSections, setOpenSections] = useState({});
+  const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem("authToken"));
+
+  useEffect(() => {
+    // Listen for changes in authToken to update login state
+    const handleStorageChange = () => {
+      setIsLoggedIn(!!localStorage.getItem("authToken"));
+    };
+
+    window.addEventListener("storage", handleStorageChange);
+    return () => {
+      window.removeEventListener("storage", handleStorageChange);
+    };
+  }, []);
+
+  if (!isLoggedIn) return null; // Hide sidebar if user is not logged in
 
   const toggleSection = (section) => {
     setOpenSections((prev) => ({ ...prev, [section]: !prev[section] }));
   };
 
   return (
-    <div className="w-64 h-screen bg-blue-900 text-white p-5">
-      <h2 className="text-2xl font-bold mb-6">Admin Panel</h2>
-      <ul className="space-y-3">
-        {/* Dashboard - Toggles Submenu */}
+    <div className="w-64 h-1000 bg-gray-900 text-white p-4 fixed left-0 top-18 ">
+      <h2 className="text-xl font-bold mb-4">Dashboard</h2>
+      <ul className="space-y-2">
         <li>
-          <button
-            onClick={() => toggleSection("dashboard")}
-            className="flex items-center justify-between w-full p-2 hover:bg-blue-700 rounded-md"
-          >
+          <button onClick={() => toggleSection("budget")} className="w-full flex items-center justify-between p-2 hover:bg-gray-700 rounded">
             <span className="flex items-center gap-2">
-              <FiHome /> Dashboard
+              <FaMoneyBillWave /> Budget
             </span>
-            <span>{openSections.dashboard ? "▲" : "▼"}</span>
+            <span>{openSections.budget ? "▲" : "▼"}</span>
           </button>
-
-          {/* Expanded Dashboard Submenu */}
-          {openSections.dashboard && (
-            <ul className="pl-6 space-y-2">
-              {/* Budget Section */}
-              <li>
-                <button
-                  onClick={() => toggleSection("budget")}
-                  className="w-full flex items-center justify-between p-2 hover:bg-gray-700 rounded"
-                >
-                  <span className="flex items-center gap-2">
-                    <FaMoneyBillWave /> Budget
-                  </span>
-                  <span>{openSections.budget ? "▲" : "▼"}</span>
-                </button>
-                {openSections.budget && (
-                  <ul className="pl-6 space-y-1">
-                    <li className="hover:bg-gray-700 p-2 rounded cursor-pointer" onClick={() => navigate("/budget/from")}>From</li>
-                    <li className="hover:bg-gray-700 p-2 rounded cursor-pointer" onClick={() => navigate("/budget/list")}>List</li>
-                    <li className="hover:bg-gray-700 p-2 rounded cursor-pointer" onClick={() => navigate("/budget/chart")}>Chart</li>
-                    <li className="hover:bg-gray-700 p-2 rounded cursor-pointer" onClick={() => navigate("/budget/exportdata")}>Export Data</li>
-                  </ul>
-                )}
-              </li>
-
-              {/* Expense Section */}
-              <li>
-                <button
-                  onClick={() => toggleSection("expense")}
-                  className="w-full flex items-center justify-between p-2 hover:bg-gray-700 rounded"
-                >
-                  <span className="flex items-center gap-2">
-                    <FaClipboardList /> Expense
-                  </span>
-                  <span>{openSections.expense ? "▲" : "▼"}</span>
-                </button>
-                {openSections.expense && (
-                  <ul className="pl-6 space-y-1">
-                    <li className="hover:bg-gray-700 p-2 rounded cursor-pointer" onClick={() => navigate("/expense/expense")}>Expense</li>
-                    <li className="hover:bg-gray-700 p-2 rounded cursor-pointer" onClick={() => navigate("/expense/list")}>List</li>
-                    <li className="hover:bg-gray-700 p-2 rounded cursor-pointer" onClick={() => navigate("/expense/chart")}>Chart</li>
-                    <li className="hover:bg-gray-700 p-2 rounded cursor-pointer" onClick={() => navigate("/expense/recurring")}>Recurring</li>
-                    <li className="hover:bg-gray-700 p-2 rounded cursor-pointer" onClick={() => navigate("/expense/recurring-list")}>Recurring List</li>
-                  </ul>
-                )}
-              </li>
-
-              {/* Goals */}
-              <li className="hover:bg-gray-700 p-2 rounded cursor-pointer flex items-center gap-2" onClick={() => navigate("/goals")}>
-                <FaBullseye /> Goals
-              </li>
-
-              {/* Income Section */}
-              <li>
-                <button
-                  onClick={() => toggleSection("income")}
-                  className="w-full flex items-center justify-between p-2 hover:bg-gray-700 rounded"
-                >
-                  <span className="flex items-center gap-2">
-                    <FaWallet /> Income
-                  </span>
-                  <span>{openSections.income ? "▲" : "▼"}</span>
-                </button>
-                {openSections.income && (
-                  <ul className="pl-6 space-y-1">
-                    <li className="hover:bg-gray-700 p-2 rounded cursor-pointer" onClick={() => navigate("/income/from")}>From</li>
-                    <li className="hover:bg-gray-700 p-2 rounded cursor-pointer" onClick={() => navigate("/income/list")}>List</li>
-                    <li className="hover:bg-gray-700 p-2 rounded cursor-pointer" onClick={() => navigate("/income/report")}>Report</li>
-                  </ul>
-                )}
-              </li>
-
-              {/* All Reports */}
-              <li className="hover:bg-gray-700 p-2 rounded cursor-pointer flex items-center gap-2" onClick={() => navigate("/reports")}>
-                <FaChartPie /> All Reports
-              </li>
-
-              {/* Due Bill List */}
-              <li className="hover:bg-gray-700 p-2 rounded cursor-pointer flex items-center gap-2" onClick={() => navigate("/du-bill-list")}>
-                <FaFileExport /> Due Bill List
-              </li>
+          {openSections.budget && (
+            <ul className="pl-6 space-y-1">
+              <li className="hover:bg-gray-700 p-2 rounded cursor-pointer" onClick={() => navigate("/budgetForm")}>From</li>
+              <li className="hover:bg-gray-700 p-2 rounded cursor-pointer" onClick={() => navigate("/budgetList")}>List</li>
+              <li className="hover:bg-gray-700 p-2 rounded cursor-pointer" onClick={() => navigate("/budgetChart")}>Chart</li>
+              <li className="hover:bg-gray-700 p-2 rounded cursor-pointer" onClick={() => navigate("/exportdata")}>Export Data</li>
             </ul>
           )}
         </li>
-
-        {/* Profile Settings */}
-        <li className="flex items-center space-x-3 hover:bg-blue-700 p-2 rounded-md">
-          <FiUser />
-          <Link to="/api/auth/profile" className="block py-2 rounded">Profile Settings</Link>
+        <li>
+          <button onClick={() => toggleSection("expense")} className="w-full flex items-center justify-between p-2 hover:bg-gray-700 rounded">
+            <span className="flex items-center gap-2">
+              <FaClipboardList /> Expense
+            </span>
+            <span>{openSections.expense ? "▲" : "▼"}</span>
+          </button>
+          {openSections.expense && (
+            <ul className="pl-6 space-y-1">
+              <li className="hover:bg-gray-700 p-2 rounded cursor-pointer" onClick={() => navigate("/expenseRecording")}>Expense</li>
+              <li className="hover:bg-gray-700 p-2 rounded cursor-pointer" onClick={() => navigate("/expense/list")}>List</li>
+              <li className="hover:bg-gray-700 p-2 rounded cursor-pointer" onClick={() => navigate("/expense/chart")}>Chart</li>
+              <li className="hover:bg-gray-700 p-2 rounded cursor-pointer" onClick={() => navigate("/expense/recurring")}>Recurring</li>
+              <li className="hover:bg-gray-700 p-2 rounded cursor-pointer" onClick={() => navigate("/expense/recurring-list")}>Recurring List</li>
+            </ul>
+          )}
         </li>
-
-        <li className="flex items-center space-x-3 hover:bg-red-600 p-2 rounded-md mt-4">
-        <FiSum size={24} color="white" />
-        <FiDollarSign size={24} color="white" />   // Dollar sign
-<FiTrendingUp size={24} color="white" />   // Upward trend (income)
-<FiTrendingDown size={24} color="white" /> // Downward trend (expense)
-<FaCalculator size={24} color="white" />   // Calculator (sum-related)
-
-          <Link to="/TotalSum">Logout</Link>
+        <li className="hover:bg-gray-700 p-2 rounded cursor-pointer flex items-center gap-2" onClick={() => navigate("/goals")}>
+          <FaBullseye /> Goals
         </li>
-
-        {/* Logout */}
-        <li className="flex items-center space-x-3 hover:bg-red-600 p-2 rounded-md mt-4">
-          <FiLogOut />
-          <Link to="/login">Logout</Link>
+        <li>
+          <button onClick={() => toggleSection("income")} className="w-full flex items-center justify-between p-2 hover:bg-gray-700 rounded">
+            <span className="flex items-center gap-2">
+              <FaWallet /> Income
+            </span>
+            <span>{openSections.income ? "▲" : "▼"}</span>
+          </button>
+          {openSections.income && (
+            <ul className="pl-6 space-y-1">
+              <li className="hover:bg-gray-700 p-2 rounded cursor-pointer" onClick={() => navigate("/income/from")}>From</li>
+              <li className="hover:bg-gray-700 p-2 rounded cursor-pointer" onClick={() => navigate("/income/list")}>List</li>
+              <li className="hover:bg-gray-700 p-2 rounded cursor-pointer" onClick={() => navigate("/income/report")}>Report</li>
+            </ul>
+          )}
+        </li>
+        <li className="hover:bg-gray-700 p-2 rounded cursor-pointer flex items-center gap-2" onClick={() => navigate("/financialReports")}>
+          <FaChartPie /> All Reports
+        </li>
+        <li className="hover:bg-gray-700 p-2 rounded cursor-pointer flex items-center gap-2" onClick={() => navigate("/du-bill-list")}>
+          <FaFileExport /> Due Bill List
         </li>
       </ul>
     </div>

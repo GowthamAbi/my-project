@@ -14,9 +14,9 @@ const ProfileMenu = () => {
     navigate('/register');
   };
   const logout = () => {
-    
-    document.cookie = 'yourCookieName=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;'; 
-    navigate('/');
+    localStorage.clear(); // Clear all user data
+    document.cookie = 'yourCookieName=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+    navigate('/login');
   };
   const handleMouseEnter = () => {
     setIsVisible(true);

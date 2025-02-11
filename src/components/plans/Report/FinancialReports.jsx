@@ -53,7 +53,7 @@ const FinancialReports = () => {
   if (loading) return <p>Loading financial data...</p>;
 
   return (
-    <div className="container mx-auto p-6">
+    <div className="container ml-4 p-6">
       <h2 className="text-2xl font-bold text-center mb-4">Financial Reports</h2>
 
       {/* Expense Report (Pie Chart) */}
